@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.use('/api', authRoutes)
+app.use('/api/auth', authRoutes)
 
 // global error handler
 app.use(errorMiddleware);
