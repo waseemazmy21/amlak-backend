@@ -1,9 +1,17 @@
-import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
+import { Strategy, StrategyOptions } from 'passport-jwt';
 import User from '../../models/user';
+import { Request } from 'express';
+
+const cookieExtractor = (req: Request): string | null => {
+  if (req && req.cookies) {
+    return req.cookies.accessToken || null;
+  }
+  return null;
+};
 
 const options: StrategyOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRECT || 'secret',
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRECT!,
 };
 
 const jwtStrategy = new Strategy(options, async (payload, done) => {

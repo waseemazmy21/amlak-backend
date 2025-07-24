@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.9",
     "@types/eslint": "^9.6.1",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.28",
