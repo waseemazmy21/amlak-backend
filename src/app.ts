@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import errorMiddleware from './middlewares/errorMiddleware';
-import { getUser } from './controllers/userController';
+import authRoutes from './routes/authRoutes'
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // routes
-app.get("/user/:userId", getUser)
+app.use('/api', authRoutes)
 
 // global error handler
 app.use(errorMiddleware);
