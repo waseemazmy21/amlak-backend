@@ -7,7 +7,10 @@ const errorMiddleware = (err: Error | AppError, req: Request, res: Response, _ne
   // note: we just get message from AppError erro, if it's Error instance we use default message
   // example: req.body is not a function, so i will not return this to front end casue this realted to backend server error
   const message = (err instanceof AppError && err.message) || 'Internal Server Error'
-  res.status(statusCode).json({ message });
+  res.status(statusCode).json({
+    success: false,
+    message,
+  });
 };
 
 export default errorMiddleware;

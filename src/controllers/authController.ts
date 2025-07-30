@@ -17,8 +17,7 @@ export const login = expressAsyncHandler(async (req: Request, res: Response, nex
     }
 
     const accessToken = generateAccessToken(user._id)
-
-    res
+    res.status(201)
         .cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // using https
@@ -26,18 +25,20 @@ export const login = expressAsyncHandler(async (req: Request, res: Response, nex
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         })
         .json({
+            success: true,
             message: 'Login successful',
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
+            data: {
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                }
             }
         })
-})
+});
 
 export const register = expressAsyncHandler(async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
-
     let existingUser = await User.findOne({ email });
     if (existingUser) {
         throw new AppError("Email already in use", 409);
@@ -49,9 +50,7 @@ export const register = expressAsyncHandler(async (req: Request, res: Response) 
     }
 
     const user = await User.create({ username, email, password });
-
     const accessToken = generateAccessToken(user._id);
-
     res.status(201)
         .cookie('accessToken', accessToken, {
             httpOnly: true,
@@ -60,13 +59,15 @@ export const register = expressAsyncHandler(async (req: Request, res: Response) 
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         })
         .json({
+            success: true,
             message: "User registered successfully",
-
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-            },
+            data: {
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                }
+            }
         });
 });
 
@@ -77,6 +78,8 @@ export const logout = (req: Request, res: Response) => {
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-
-    res.status(200).json({ message: "Logged out successfully." });
+    res.status(200).json({
+        success: true,
+        message: "Logged out successfully.",
+    });
 };

@@ -4,11 +4,14 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import errorMiddleware from './middlewares/errorMiddleware';
-import authRoutes from './routes/authRoutes'
+import authRoutes from './routes/authRoutes';
+import { setupSwagger } from './config/swagger';
 
 dotenv.config();
 
 const app = express();
+
+setupSwagger(app);
 
 // app level middleware
 app.use(express.json());

@@ -1,0 +1,235 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: 1.0.0
+  description: Endpoints for user authentication. All authentication tokens are set as HTTP-only cookies, not returned in the response body. All responses follow a standard structure with success, message, and data or errors fields.
+tags:
+  - name: Auth
+    description: Authentication endpoints
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User login
+      description: Authenticates a user. On success, sets an HTTP-only cookie named 'accessToken' containing the JWT. The response body contains a success flag, message, and user info in the data field.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                  description: User's email address
+                password:
+                  type: string
+                  format: password
+                  example: mySecret123
+                  description: User's password
+      responses:
+        '201':
+          description: Login successful. Access token is set as an HTTP-only cookie. Response body contains success, message, and user info in data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: User ID
+                          username:
+                            type: string
+                            description: Username
+                          email:
+                            type: string
+                            format: email
+                            description: User's email address
+              examples:
+                success:
+                  value:
+                    success: true
+                    message: Login successful
+                    data:
+                      user:
+                        id: "123"
+                        username: "Waseem"
+                        email: "waseem@example.com"
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid email or password
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: User registration
+      description: Registers a new user. On success, sets an HTTP-only cookie named 'accessToken' containing the JWT. The response body contains a success flag, message, and user info in the data field.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                  description: Desired username
+                email:
+                  type: string
+                  format: email
+                  example: newuser@example.com
+                  description: New user's email address
+                password:
+                  type: string
+                  format: password
+                  example: mySecret123
+                  description: New user's password
+      responses:
+        '201':
+          description: Registration successful. Access token is set as an HTTP-only cookie. Response body contains success, message, and user info in data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User registered successfully
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: User ID
+                          username:
+                            type: string
+                            description: Username
+                          email:
+                            type: string
+                            format: email
+                            description: User's email address
+              examples:
+                success:
+                  value:
+                    success: true
+                    message: User registered successfully
+                    data:
+                      user:
+                        id: "123"
+                        username: "Waseem"
+                        email: "waseem@example.com"
+        '409':
+          description: Email or username already in use
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Email already in use
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: Field-specific validation errors
+              examples:
+                validation:
+                  value:
+                    success: false
+                    message: Validation failed
+                    errors:
+                      email: Email is required
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: User logout
+      description: Logs out the user by clearing the 'accessToken' HTTP-only cookie. The response body contains a success flag and message.
+      responses:
+        '200':
+          description: Logout successful. Access token cookie is cleared.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Logged out successfully.
+              examples:
+                success:
+                  value:
+                    success: true
+                    message: Logged out successfully.
+        '401':
+          description: Unauthorized or invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthorized or invalid token
