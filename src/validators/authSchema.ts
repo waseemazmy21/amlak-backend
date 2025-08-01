@@ -25,7 +25,7 @@ export const loginSchema = Joi.object({
 }).required()
 
 export const registerSchema = Joi.object({
-    username: Joi.string().trim().min(3).max(30).required().messages({
+    fullName: Joi.string().trim().min(3).max(50).required().messages({
         "string.empty": "Username is required",
         "string.min": "Username must be at least 3 characters",
         "string.max": "Username must be at most 30 characters",

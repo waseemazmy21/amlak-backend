@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
   _id: string;
-  username: string;
+  fullName: string;
   email: string;
   password: string;
   createdAt: Date;
@@ -12,12 +12,11 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
-    username: {
+    fullName: {
       type: String,
       required: true,
-      unique: true,
       minlength: 3,
-      maxlength: 30,
+      maxlength: 50,
     },
     email: {
       type: String,

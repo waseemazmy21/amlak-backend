@@ -30,7 +30,7 @@ export const login = expressAsyncHandler(async (req: Request, res: Response, nex
             data: {
                 user: {
                     id: user._id,
-                    username: user.username,
+                    fullName: user.fullName,
                     email: user.email,
                 }
             }
@@ -38,18 +38,13 @@ export const login = expressAsyncHandler(async (req: Request, res: Response, nex
 });
 
 export const register = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { username, email, password } = req.body;
+    const { fullName, email, password } = req.body;
     let existingUser = await User.findOne({ email });
     if (existingUser) {
         throw new AppError("Email already in use", 409);
     }
 
-    existingUser = await User.findOne({ username });
-    if (existingUser) {
-        throw new AppError("Username already in use", 409);
-    }
-
-    const user = await User.create({ username, email, password });
+    const user = await User.create({ fullName, email, password });
     const accessToken = generateAccessToken(user._id);
     res.status(201)
         .cookie('accessToken', accessToken, {
@@ -64,7 +59,7 @@ export const register = expressAsyncHandler(async (req: Request, res: Response) 
             data: {
                 user: {
                     id: user._id,
-                    username: user.username,
+                    fullName: user.fullName,
                     email: user.email,
                 }
             }
