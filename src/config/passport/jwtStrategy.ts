@@ -3,10 +3,7 @@ import User from '../../models/user';
 import { Request } from 'express';
 
 const cookieExtractor = (req: Request): string | null => {
-  if (req && req.cookies) {
-    return req.cookies.accessToken || null;
-  }
-  return null;
+  return req.cookies.accessToken || null;
 };
 
 const options: StrategyOptions = {
