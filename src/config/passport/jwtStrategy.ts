@@ -1,6 +1,9 @@
 import { Strategy, StrategyOptions } from 'passport-jwt';
 import User from '../../models/user';
 import { Request } from 'express';
+import dotenv from 'dotenv';
+
+dotenv.config()
 
 const cookieExtractor = (req: Request): string | null => {
   return req.cookies.accessToken || null;
@@ -8,7 +11,7 @@ const cookieExtractor = (req: Request): string | null => {
 
 const options: StrategyOptions = {
   jwtFromRequest: cookieExtractor,
-  secretOrKey: process.env.JWT_SECRECT!,
+  secretOrKey: process.env.JWT_SECRET || "secret",
 };
 
 const jwtStrategy = new Strategy(options, async (payload, done) => {
