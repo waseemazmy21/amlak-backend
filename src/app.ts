@@ -5,7 +5,10 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import errorMiddleware from './middlewares/errorMiddleware';
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 import { setupSwagger } from './config/swagger';
+import passport from 'passport';
+import './config/passport'
 
 dotenv.config();
 
@@ -21,8 +24,11 @@ app.use(cors({
   credentials: true,
 }));
 app.use(cookieParser());
+app.use(passport.initialize())
+
 // routes
 app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes);
 
 // global error handler
 app.use(errorMiddleware);
