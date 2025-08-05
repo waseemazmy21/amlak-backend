@@ -13,8 +13,6 @@ export const loginSchema = Joi.object({
 
     password: Joi.string()
         .trim()
-        .min(6)
-        .max(30)
         .required()
         .messages({
             "string.empty": "Password is required",

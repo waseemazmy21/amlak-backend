@@ -66,6 +66,17 @@ export const register = expressAsyncHandler(async (req: Request, res: Response) 
         });
 });
 
+export const getUser = expressAsyncHandler(async (req: Request, res: Response) => {
+    const user = req.user;
+    res.status(200).json({
+        success: true,
+        message: "User fetched successfully",
+        data: {
+            user
+        }
+    });
+});
+
 export const logout = (req: Request, res: Response) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
