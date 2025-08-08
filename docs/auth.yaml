@@ -70,9 +70,13 @@ paths:
                     message: Login successful
                     data:
                       user:
-                        id: "123"
-                        username: "Waseem"
-                        email: "waseem@example.com"
+                        id: "6123456789abcdef01234567"
+                        fullName: "John Doe"
+                        email: "john@example.com"
+                        phone: "01557992842"
+                        bio: "Real estate agent..."
+                        image: "https://example.com/avatar.jpg"
+                        role: "user"
         '401':
           description: Invalid credentials
           content:
@@ -86,6 +90,74 @@ paths:
                   message:
                     type: string
                     example: Invalid email or password
+  /api/auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Get current user
+      description: Returns the currently authenticated user's information. Requires authentication via accessToken cookie.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Current user information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "6123456789abcdef01234567"
+                          fullName:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            format: email
+                            example: "john@example.com"
+                          phone:
+                            type: string
+                            example: "01557992842"
+                          bio:
+                            type: string
+                            example: "Real estate agent..."
+                          image:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+                          role:
+                            type: string
+                            enum: [user, admin]
+                            example: "user"
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Not authenticated
+                  errors:
+                    type: object
+                    example: {}
+
   /api/auth/register:
     post:
       tags:
@@ -99,14 +171,15 @@ paths:
             schema:
               type: object
               required:
-                - username
+                - fullName
                 - email
                 - password
+                - phone
               properties:
-                username:
+                fullName:
                   type: string
-                  example: johndoe
-                  description: Desired username
+                  example: "John Doe"
+                  description: User's full name
                 email:
                   type: string
                   format: email

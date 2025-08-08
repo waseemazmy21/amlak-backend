@@ -1,0 +1,326 @@
+openapi: 3.0.0
+info:
+  title: Users API
+  version: 1.0.0
+  description: Endpoints for user management. All endpoints require authentication unless specified otherwise.
+tags:
+  - name: Users
+    description: User management endpoints
+paths:
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Returns a list of all users. Requires admin role.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Users retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "6123456789abcdef01234567"
+                            fullName:
+                              type: string
+                              example: "John Doe"
+                            email:
+                              type: string
+                              example: "john@example.com"
+                            phone:
+                              type: string
+                              example: "01557992842"
+                            bio:
+                              type: string
+                              example: "Real state agen........"
+                            image:
+                              type: string
+                              example: "https://example.com/avatar.jpg"
+                            role:
+                              type: string
+                              enum: [user, admin]
+                              example: "user"
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Not authenticated
+                  errors:
+                    type: object
+                    example: {}
+        '403':
+          description: Not authorized (requires admin role)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Not authorized
+                  errors:
+                    type: object
+                    example: {}
+
+  /api/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: Returns a specific user by their ID. Requires authentication.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User retrieved successfully
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "6123456789abcdef01234567"
+                          fullName:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            example: "john@example.com"
+                          phone:
+                            type: string
+                            example: "+1234567890"
+                          bio:
+                            type: string
+                            example: "Software developer"
+                          image:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User not found
+                  errors:
+                    type: object
+                    example: {}
+
+    put:
+      tags:
+        - Users
+      summary: Update user
+      description: Updates a user's information. Users can only update their own information unless they have admin role.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                bio:
+                  type: string
+                  example: "Software developer"
+                image:
+                  type: string
+                  example: "https://example.com/avatar.jpg"
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User updated successfully
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "6123456789abcdef01234567"
+                          fullName:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            example: "john@example.com"
+                          phone:
+                            type: string
+                            example: "+1234567890"
+                          bio:
+                            type: string
+                            example: "Software developer"
+                          image:
+                            type: string
+                            example: "https://example.com/avatar.jpg"
+        '403':
+          description: Not authorized to update this user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Not authorized to update this user
+                  errors:
+                    type: object
+                    example: {}
+
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Deletes a user. Requires admin role.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: User deleted successfully
+                  data:
+                    type: object
+                    example: {}
+        '403':
+          description: Not authorized (requires admin role)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Not authorized
+                  errors:
+                    type: object
+                    example: {}
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: User not found
+                  errors:
+                    type: object
+                    example: {}
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
