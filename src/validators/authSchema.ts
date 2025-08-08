@@ -45,5 +45,17 @@ export const registerSchema = Joi.object({
             "string.max": "Password cannot be more than 30 characters",
             "any.required": "Password is required",
         }),
-
+    phone: Joi.string().required().messages({
+        "string.empty": "Phone number is required",
+        "any.required": "Phone number is required",
+    }),
+    bio: Joi
+        .string()
+        .trim()
+        .optional()
+        .max(255)
+        .messages({
+            "string.max": "bio must be at most 255 charcters."
+        }),
+    image: Joi.string().optional(),
 }).required()

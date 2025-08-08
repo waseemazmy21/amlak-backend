@@ -6,7 +6,11 @@ import AppError from '../util/AppError';
 // Get all users
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
     const users = await User.find().select('-password');
-    res.json(users);
+    res.json({
+        success: true,
+        message: 'Users retrieved successfully',
+        data: { users }
+    });
 });
 
 // Get user by ID
@@ -15,21 +19,28 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
     if (!user) {
         throw new AppError('User not found', 404);
     }
-    res.json(user);
+    res.json({
+        success: true,
+        message: 'User retrieved successfully',
+        data: { user }
+    });
 });
 
 // Update user
 export const updateUser = asyncHandler(async (req: Request, res: Response) => {
-    const { fullName, email, role } = req.body;
     const user = await User.findByIdAndUpdate(
         req.params.id,
-        { fullName, email, role },
+        req.body,
         { new: true, runValidators: true }
-    ).select('-password');
+    );
     if (!user) {
         throw new AppError('User not found', 404);
     }
-    res.json(user);
+    res.json({
+        success: true,
+        message: 'User updated successfully',
+        data: { user }
+    });
 });
 
 // Delete user
@@ -38,5 +49,9 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
     if (!user) {
         throw new AppError('User not found', 404);
     }
-    res.json({ message: 'User deleted successfully' });
+    res.json({
+        success: true,
+        message: 'User deleted successfully',
+        data: {}
+    });
 });

@@ -6,6 +6,9 @@ export interface IUser extends Document {
   fullName: string;
   email: string;
   password: string;
+  phone: string;
+  bio?: string;
+  image?: string;
   createdAt: Date;
   role: string;
   comparePassword: (password: string) => Promise<boolean>
@@ -28,7 +31,21 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       minlength: 6,
-      maxlength: 30
+      maxlength: 30,
+      select: false,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    bio: {
+      type: String,
+      required: false,
+      maxlength: 255,
+    },
+    image: {
+      type: String,
+      required: false,
     },
     role: {
       type: String,
