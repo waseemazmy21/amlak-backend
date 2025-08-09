@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ObjectSchema, ValidationResult } from "joi";
+import { ObjectSchema } from "joi";
 
 const validate = (schema: ObjectSchema) => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +19,8 @@ const validate = (schema: ObjectSchema) => {
                 message,
                 errors
             })
+
+            return
         }
         next()
     }
