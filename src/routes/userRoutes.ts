@@ -13,7 +13,7 @@ router.get('/', protectedRoute, getAllUsers);
 router.get('/:id', protectedRoute, getUserById);
 
 // Update user
-router.put('/:id', protectedRoute, validate(updateUserSchema), updateUser);
+router.patch('/:id', protectedRoute, validate(updateUserSchema), updateUser);
 
 // Delete user (admin only)
 router.delete('/:id', protectedRoute, deleteUser);
