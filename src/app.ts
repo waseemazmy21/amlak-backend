@@ -6,6 +6,7 @@ import connectDB from './config/db';
 import errorMiddleware from './middlewares/errorMiddleware';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import propertiesRoutes from './routes/propertyRoutes'
 import { setupSwagger } from './config/swagger';
 import passport from 'passport';
 import './config/passport'
@@ -28,7 +29,8 @@ app.use(passport.initialize())
 
 // routes
 app.use('/api/auth', authRoutes)
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes)
+app.use('/api/properties', propertiesRoutes)
 
 // global error handler
 app.use(errorMiddleware);
