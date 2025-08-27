@@ -1,7 +1,5 @@
 import Joi from 'joi';
 import { PropertyType, PropertyStatus } from '../models/property';
-import { features } from 'process';
-import { zstdCompress } from 'zlib';
 
 export const createPropertySchema = Joi.object({
     title: Joi.string().required().messages({
@@ -98,7 +96,7 @@ export const updatePropertySchema = Joi.object({
 }).min(1);
 
 export const propertyFiltersSchema = Joi.object({
-    city: Joi.string(),
+    search: Joi.string(),
     minPrice: Joi.number(),
     maxPrice: Joi.number(),
     propertyType: Joi.string().valid(...Object.values(PropertyType)),

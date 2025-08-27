@@ -7,7 +7,7 @@ import cloudinary from '../config/cloudinary';
 // Create Property
 export const createProperty = asyncHandler(async (req: Request, res: Response) => {
     let imageUrls: string[] = [];
-   if (req.files && Array.isArray(req.files)) {
+    if (req.files && Array.isArray(req.files)) {
         const uploadPromises = req.files.map((file: Express.Multer.File) => {
             return new Promise<string>((resolve, reject) => {
                 cloudinary.uploader.upload_stream(
@@ -55,42 +55,75 @@ export const createProperty = asyncHandler(async (req: Request, res: Response) =
 
 // Get Properties with Filters, Sorting, Pagination
 export const getProperties = asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.query)
     const {
-        city,
+        search,
         minPrice,
         maxPrice,
         propertyType,
         minBedrooms,
-        maxBedrooms,
         minBathrooms,
-        maxBathrooms,
         page = 1,
-        limit = 10
+        limit = 10,
     } = req.query;
 
     const filter: any = {};
-    if (city) filter['location.city'] = city;
-    if (propertyType) filter.propertyType = propertyType;
-    if (minPrice || maxPrice) filter.price = {};
-    if (minPrice) filter.price.$gte = Number(minPrice);
-    if (maxPrice) filter.price.$lte = Number(maxPrice);
-    if (minBedrooms || maxBedrooms) filter.bedrooms = {};
-    if (minBedrooms) filter.bedrooms.$gte = Number(minBedrooms);
-    if (maxBedrooms) filter.bedrooms.$lte = Number(maxBedrooms);
-    if (minBathrooms || maxBathrooms) filter.bathrooms = {};
-    if (minBathrooms) filter.bathrooms.$gte = Number(minBathrooms);
-    if (maxBathrooms) filter.bathrooms.$lte = Number(maxBathrooms);
 
-    const skip = (Number(page) - 1) * Number(limit);
-    const properties = await Property.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(Number(limit));
+    if (search) {
+        const regex = new RegExp(search as string, "i");
+        filter.$or = [
+            { "location.city": regex },
+            { "location.state": regex },
+            // { title: regex },
+            // { description: regex },
+        ];
+    }
+
+    if (propertyType) {
+        filter.propertyType = propertyType;
+    }
+
+    if (minPrice || maxPrice) {
+        filter.price = {};
+        if (minPrice) filter.price.$gte = Number(minPrice);
+        if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    if (minBedrooms) {
+        filter.bedrooms = {};
+        if (minBedrooms) filter.bedrooms.$gte = Number(minBedrooms);
+    }
+
+    if (minBathrooms) {
+        filter.bathrooms = {};
+        if (minBathrooms) filter.bathrooms.$gte = Number(minBathrooms);
+    }
+
+    const currentPage = Number(page);
+    const itemsPerPage = Number(limit);
+    const skip = (currentPage - 1) * itemsPerPage;
+
+    const [properties, totalItems] = await Promise.all([
+        Property.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(itemsPerPage),
+        Property.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
 
     res.json({
         success: true,
-        message: 'Properties retrieved successfully',
-        data: { properties }
+        message: "Properties retrieved successfully",
+        data: {
+            properties,
+            totalItems,
+            totalPages,
+            currentPage,
+            itemsPerPage,
+        },
     });
 });
 
