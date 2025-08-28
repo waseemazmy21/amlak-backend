@@ -1,4 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
+import { IUser } from './user';
 
 export enum PropertyType {
     House = 'house',
@@ -16,6 +17,7 @@ export enum PropertyStatus {
 }
 
 export interface Property extends Document {
+    user: IUser;
     _id: string;
     title: string;
     description: string;
@@ -44,6 +46,11 @@ const locationSchema = new Schema({
 }, { _id: false });
 
 const propertySchema = new Schema<Property>({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: true,

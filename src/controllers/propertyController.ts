@@ -3,6 +3,8 @@ import asyncHandler from 'express-async-handler';
 import Property from '../models/property';
 import AppError from '../util/AppError';
 import cloudinary from '../config/cloudinary';
+import { Types } from 'mongoose';
+import { IUser } from '../models/user';
 
 // Create Property
 export const createProperty = asyncHandler(async (req: Request, res: Response) => {
@@ -38,13 +40,18 @@ export const createProperty = asyncHandler(async (req: Request, res: Response) =
     }
 
     // Add image URLs to request body
+    if (!req.user) {
+        throw new AppError('User not authenticated', 401);
+    }
+
+
     const propertyData = {
         ...req.body,
-        images: imageUrls
+        images: imageUrls,
+        user: new Types.ObjectId((req.user as IUser)._id)
     };
 
     const property = await Property.create(propertyData);
-    console.log(req.body);
 
     res.status(201).json({
         success: true,
@@ -55,7 +62,6 @@ export const createProperty = asyncHandler(async (req: Request, res: Response) =
 
 // Get Properties with Filters, Sorting, Pagination
 export const getProperties = asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.query)
     const {
         search,
         minPrice,
@@ -129,7 +135,7 @@ export const getProperties = asyncHandler(async (req: Request, res: Response) =>
 
 // Get Property by ID
 export const getPropertyById = asyncHandler(async (req: Request, res: Response) => {
-    const property = await Property.findById(req.params.id);
+    const property = await Property.findById(req.params.id).populate('user');
     if (!property) {
         throw new AppError('Property not found', 404);
     }
