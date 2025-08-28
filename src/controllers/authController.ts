@@ -21,7 +21,7 @@ export const login = expressAsyncHandler(async (req: Request, res: Response, nex
         .cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // using https
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         })
         .json({
@@ -46,7 +46,7 @@ export const register = expressAsyncHandler(async (req: Request, res: Response) 
         .cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // using https
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         })
         .json({
@@ -73,7 +73,7 @@ export const logout = (req: Request, res: Response) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // should match cookie settings used on login
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
     res.status(200).json({
