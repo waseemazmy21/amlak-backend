@@ -62,7 +62,7 @@ export const createProperty = asyncHandler(async (req: Request, res: Response) =
 
 // Get Properties with Filters, Sorting, Pagination
 export const getProperties = asyncHandler(async (req: Request, res: Response) => {
-    const {
+    let {
         search,
         minPrice,
         maxPrice,
@@ -105,19 +105,19 @@ export const getProperties = asyncHandler(async (req: Request, res: Response) =>
         if (minBathrooms) filter.bathrooms.$gte = Number(minBathrooms);
     }
 
-    const currentPage = Number(page);
-    const itemsPerPage = Number(limit);
-    const skip = (currentPage - 1) * itemsPerPage;
+    page = Number(page)
+    limit = Number(limit)
+    const skip = (page - 1) * limit;
 
     const [properties, totalItems] = await Promise.all([
         Property.find(filter)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(itemsPerPage),
+            .limit(limit),
         Property.countDocuments(filter),
     ]);
 
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const totalPages = Math.ceil(totalItems / limit);
 
 
     res.json({
@@ -127,8 +127,8 @@ export const getProperties = asyncHandler(async (req: Request, res: Response) =>
             properties,
             totalItems,
             totalPages,
-            currentPage,
-            itemsPerPage,
+            page,
+            limit,
         },
     });
 });
@@ -175,3 +175,31 @@ export const deleteProperty = asyncHandler(async (req: Request, res: Response) =
         data: {}
     });
 });
+
+export const getPropertiesByUser = asyncHandler(async (req: Request, res: Response) => {
+    let { page = 1, limit = 10 } = req.query;
+    page = Number(page);
+    limit = Number(limit);
+
+    const [properties, totalItems] = await Promise.all([
+        Property.find({ user: new Types.ObjectId(req.params.id) })
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit),
+        Property.countDocuments({ user: new Types.ObjectId(req.params.id) })
+    ])
+    const totalPages = Math.ceil(totalItems / limit);
+
+    res.json({
+        success: true,
+        message: 'Properties retrieved successfully',
+        data: {
+            properties,
+            totalItems,
+            totalPages,
+            page,
+            limit
+        }
+    });
+});
+

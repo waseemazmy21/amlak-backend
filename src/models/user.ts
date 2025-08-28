@@ -69,5 +69,16 @@ userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
 
+userSchema.virtual('properties', {
+  ref: 'Property',
+  localField: '_id',
+  foreignField: 'user'
+})
+
+userSchema.set('toObject', { virtuals: true });
+userSchema.set('toJSON', { virtuals: true });
+
 const User = model<IUser>('User', userSchema);
 export default User;
+
+

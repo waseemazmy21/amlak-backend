@@ -4,7 +4,8 @@ import {
     getProperties,
     getPropertyById,
     updateProperty,
-    deleteProperty
+    deleteProperty,
+    getPropertiesByUser
 } from '../controllers/propertyController';
 import validate from '../middlewares/validate';
 import { createPropertySchema, updatePropertySchema, propertyFiltersSchema } from '../validators/propertySchema';
@@ -20,5 +21,5 @@ router.get('/', validate(propertyFiltersSchema), getProperties);
 router.get('/:id', getPropertyById);
 router.patch('/:id', protectedRoute, validate(updatePropertySchema), updateProperty);
 router.delete('/:id', protectedRoute, deleteProperty);
-
+router.get('/user/:id', protectedRoute, getPropertiesByUser);
 export default router;
