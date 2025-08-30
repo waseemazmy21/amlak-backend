@@ -34,6 +34,10 @@ export const createPropertySchema = Joi.object({
         'any.only': `Property type must be one of ${Object.values(PropertyType).join(', ')}`,
         'any.required': 'Property type is required',
     }),
+    propertyStatus: Joi.string().valid(...Object.values(PropertyStatus)).required().messages({
+        'any.only': `Property status must be one of ${Object.values(PropertyStatus).join(', ')}`,
+        'any.required': 'Property status is required',
+    }),
     bedrooms: Joi.number().required().messages({
         'number.base': 'Bedrooms must be a number',
         'any.required': 'Bedrooms is required',
@@ -77,6 +81,9 @@ export const updatePropertySchema = Joi.object({
     }),
     propertyType: Joi.string().valid(...Object.values(PropertyType)).messages({
         'any.only': `Property type must be one of ${Object.values(PropertyType).join(', ')}`,
+    }),
+    propertyStatus: Joi.string().valid(...Object.values(PropertyStatus)).messages({
+        'any.only': `Property status must be one of ${Object.values(PropertyStatus).join(', ')}`,
     }),
     bedrooms: Joi.number().messages({
         'number.base': 'Bedrooms must be a number',
