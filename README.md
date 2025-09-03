@@ -1,93 +1,151 @@
-# Amlak Real Estate - Backend API
+# Amlak Backend API - Real Estate Platform
 
-![Project Status](https://img.shields.io/badge/status-active%20development-yellow) 
-![Node Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen)
+![Node.js](https://img.shields.io/badge/Node.js-18.x%2B-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Express](https://img.shields.io/badge/Express-4.x-lightgrey)
+![MongoDB](https://img.shields.io/badge/MongoDB-7.x-green)
+![JWT](https://img.shields.io/badge/JWT-Auth-yellow)
+![Passport.js](https://img.shields.io/badge/Passport.js-Auth-blueviolet)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-CDN-blue)
+[![Deployed on Render](https://img.shields.io/badge/Render-Deployed-5f45bb)](https://medsync-backend-production.up.railway.app/api)
 
-Backend service for Amlak Real Estate platform. This repository contains the API services, database models, and business logic for property management operations.
+## API Documentation
 
+Explore our interactive API documentation:
+- [Interactive API Documentation](https://medsync-backend-production.up.railway.app/api)
+
+## Overview
+
+Amlak Backend is a secure, scalable RESTful API built with Node.js and Express, designed to power modern real estate platforms. This backend provides all the necessary endpoints and business logic for property listings, user management, and media handling, with a strong focus on security and performance.
 
 ## Features
 
-### ✅ Implemented
-- User authentication passport & JWT
+- Secure JWT authentication with Passport.js and HttpOnly cookies
+- Complete CRUD operations for property listings
+- Image upload and management with Cloudinary integration
+- Advanced filtering and search capabilities
+- Pagination and sorting for optimal performance
+- Input validation and error handling middleware
+- Comprehensive API documentation with Swagger/OpenAPI
 - Role-based access control (Admin/User)
-- Error handling middleware
+- Email notifications system
+- Payment integration ready
 
-### 🚧 In Progress
-- Advanced search filters
-- Property CRUD operations
-- Image upload service
-- Favorite properties system
-- Email notifications
-- Payment integration
+## Tech Stack
 
-### ⏳ Planned
-- Analytics dashboard
-- Social media integrations
-- SMS notifications
-- Map-based property search
-
-## Technologies Used
-- **Framework**: Express.js
-- **Database**: MongoDB (Mongoose ODM)
-- **Authentication**: Passport & JWT
-- **Validation**: Joi
-- **Deployment**: Docker setup in progress
+- **Runtime**: Node.js 18+ with Express.js
+- **Language**: TypeScript 
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: Passport.js, JWT, bcrypt
+- **File Storage**: Cloudinary SDK
+- **Validation**: Express validators & Joi
+- **Documentation**: Swagger UI
+- **Testing**: Jest & Supertest
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js >= 22.x
-- npm >= 10.x
+
+- Node.js 18 or higher
+- npm 9 or higher
+- MongoDB 6.0 or higher
+- Cloudinary account (for image storage)
 
 ### Installation
+
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/waseemazmy21/amlak-backend.git
+
+# Navigate to project directory
+cd amlak-backend
 
 # Install dependencies
 npm install
 
-# Set up environment variables
+# Copy environment variables
 cp .env.example .env
 ```
 
-### Configuration
-Update your .env file with:
-```
+### Environment Variables
+
+Update the `.env` file with your configuration:
+
+```env
+# Server
 PORT=8000
+NODE_ENV=development
+
+# Database
 MONGODB_URI=your_mongodb_connection_string
+
+# JWT
 JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=30d
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:3000
 ```
 
-### Running the Server
+### Running the Application
+
 ```bash
-# Development mode
+# Development mode with hot-reload
 npm run dev
 
-# Production build
+# Build for production
 npm run build
+
+# Start production server
 npm start
+
+# Run tests
+npm test
 ```
 
-### API Documentation
-Interactive documentation available at http://localhost:8000/api-docs when server is running (Swagger implementation in progress).
+## Project Structure
 
-Current endpoints:
-- POST /api/auth/login - User authentication
-- POST /api/auth/register - User registration
-- POST /api/auth/logout - User logout
-
-### Project Structure
-```bash
-├── src/
-│   ├── config/         # Configuration files
-│   ├── controllers/    # Route controllers
-│   ├── models/         # MongoDB models
-│   ├── routes/         # API endpoints
-│   ├── middlewares/    # Custom middlewares
-│   ├── utils/          # Helper functions
-│   └── app.ts          # Main application entry
-├── .env.example        # Environment template
-├── package.json
 ```
+src/
+├── config/           # Configuration files
+│   ├── db.ts        # Database connection
+│   ├── passport.ts  # Passport strategies
+│   └── cloudinary.ts # Cloudinary configuration
+├── controllers/     # Route controllers
+├── middlewares/     # Custom middlewares
+│   ├── auth.middleware.ts  # Authentication middleware
+│   └── error.middleware.ts # Error handling
+├── models/          # Database models
+│   ├── user.model.ts
+│   └── property.model.ts
+├── routes/          # API routes
+│   ├── auth.routes.ts
+│   └── property.routes.ts
+├── services/        # Business logic
+├── types/           # TypeScript type definitions
+├── utils/           # Helper functions
+├── app.ts           # Express application
+└── server.ts        # Server entry point
+```
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user profile
+
+### Properties
+- `GET /api/properties` - Get all properties (with filters)
+- `GET /api/properties/:id` - Get single property
+- `POST /api/properties` - Create new property (protected)
+- `PUT /api/properties/:id` - Update property (protected)
+- `DELETE /api/properties/:id` - Delete property (protected)
+- `POST /api/properties/:id/images` - Upload property images (protected)
+
